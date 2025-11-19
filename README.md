@@ -1,92 +1,537 @@
-# 🎄 Kerstlootjes Trek 🎁
+# 🎄 Santa Gift Exchange - Secret Santa App
 
-Een complete applicatie voor het trekken van kerstlootjes met Vue.js frontend en NestJS backend.
+<p align="center">
+  <img src="logo.png" alt="Santa Gift Exchange Logo" width="200"/>
+</p>
 
-## Features
+<p align="center">
+  <strong>A modern web application for organizing Secret Santa with wishlists</strong>
+</p>
 
-✅ Unieke links per gebruiker
-✅ Verlanglijstjes met items, beschrijvingen en links
-✅ Random lootjes trekken
-✅ Privacy: alleen eigen lijstje en getrokken persoon zichtbaar
-✅ Responsive design
-✅ Docker containerized
-✅ Cloudflare tunnel voor externe toegang
+<p align="center">
+  <a href="#features">Features</a> •
+  <a href="#quick-start">Quick Start</a> •
+  <a href="#deployment">Deployment</a> •
+  <a href="#configuration">Configuration</a>
+</p>
 
-## Installatie
+---
 
-### Lokaal development
+## 📖 What is Santa Gift Exchange?
 
-#### Backend
+Santa Gift Exchange is a complete web application that makes it easy to organize Secret Santa for your family, friends, or colleagues. Each participant receives a unique, personal link to fill in their wishlist and see who they've drawn after the lottery.
+
+### ✨ Features
+
+- 🎁 **Wishlists** - Participants can add items with descriptions and links
+- 🔐 **Secure access** - Unique link for user
+- 👤 **Admin dashboard** - Google OAuth authentication for organizers
+- 🎲 **Random drawing** - Fair distribution with one click
+- 🔒 **Privacy** - Users only see their own wishlist and the person they drew
+- 📱 **Responsive design** - Works on desktop, tablet, and mobile
+- 🐳 **Docker ready** - Easy deployment with Docker
+- 🌐 **Cloudflare Tunnel** - Secure external access without port forwarding
+
+### 🏗️ Technology Stack
+
+- **Frontend:** Vue.js 3 + TypeScript + Vite
+- **Backend:** NestJS + TypeORM + PostgreSQL
+- **Authentication:** Google OAuth (admin) + bcrypt (users)
+- **Deployment:** Docker + Docker Compose + Cloudflare Tunnel
+
+---
+
+## 🚀 Quick Start with Docker
+
+### Prerequisites
+
+- Docker and Docker Compose installed
+- Google OAuth credentials (for admin)
+- (Optional) Cloudflare account for external access
+
+### 1. Download configuration
+
 ```bash
-cd backend
-npm install
-npm run start:dev
+# Download docker-compose and .env template
+curl -O https://raw.githubusercontent.com/firepeak-technology/santa/main/docker-compose.yml
+curl -O https://raw.githubusercontent.com/firepeak-technology/santa/main/.env.example
+
+# Rename .env.example to .env
+mv .env.example .env
 ```
 
-#### Frontend
+### 2. Configure environment variables
+
+Edit `.env` and fill in:
+
 ```bash
-cd frontend
-npm install
-npm run dev
+nano .env
 ```
 
-### Docker Deployment (Raspberry Pi)
+```env
+# Database credentials
+DB_USER=santa
+DB_PASSWORD=choose_a_secure_password_here
+DB_NAME=santa
 
-1. **Setup Cloudflare Tunnel**
+# Frontend URL
+FRONTEND_URL=http://localhost
+
+# Google OAuth (for admin dashboard)
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+ADMIN_EMAIL=your-admin@email.com
+
+# JWT Secret (generate a random string)
+JWT_SECRET=generate_a_random_string_here
+
+# Cloudflare Tunnel (optional, for external access)
+CLOUDFLARE_TUNNEL_TOKEN=your_tunnel_token
+```
+
+### 3. Start the application
+
 ```bash
-# Installeer cloudflared
+# Pull the latest images
+docker-compose -f docker-compose.prod.yml pull
+
+# Start all services
+docker-compose -f docker-compose.prod.yml up -d
+
+# View logs
+docker-compose -f docker-compose.prod.yml logs -f
+```
+
+### 4. Open the application
+
+Go to **http://localhost** in your browser
+
+---
+
+## 🥧 Deployment on Raspberry Pi
+
+### Step 1: Prepare Raspberry Pi
+
+```bash
+# Update system
+sudo apt update && sudo apt upgrade -y
+
+# Install Docker
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+
+# Add user to docker group
+sudo usermod -aG docker $USER
+newgrp docker
+
+# Install Docker Compose
+sudo apt install docker-compose-plugin -y
+
+# Test installation
+docker --version
+docker compose version
+```
+
+### Step 2: Project setup
+
+```bash
+# Create project directory
+mkdir -p ~/santa
+cd ~/santa
+
+# Download files
+curl -O https://raw.githubusercontent.com/firepeak-technology/santa/main/docker-compose.yml
+curl -O https://raw.githubusercontent.com/firepeak-technology/santa/main/.env.example
+mv .env.example .env
+
+# Edit configuration
+nano .env
+```
+
+### Step 3: Configure Google OAuth
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project or select an existing project
+3. Navigate to **APIs & Services → Credentials**
+4. Click **Create Credentials → OAuth 2.0 Client ID**
+5. Application type: **Web application**
+6. Authorized redirect URIs:
+    - Development: `http://localhost:3000/auth/google/callback`
+    - Production: `https://your-domain.com/api/auth/google/callback`
+7. Copy **Client ID** and **Client Secret** to `.env`
+
+### Step 4: (Optional) Setup Cloudflare Tunnel
+
+For external access without port forwarding:
+
+```bash
+# Install cloudflared
 curl -L https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-arm64 -o cloudflared
 sudo mv cloudflared /usr/local/bin/
 sudo chmod +x /usr/local/bin/cloudflared
 
-# Login en maak tunnel
+# Login to Cloudflare
 cloudflared tunnel login
-cloudflared tunnel create kerstlootjes
+
+# Create tunnel
+cloudflared tunnel create santa
+
+# Note the tunnel token and add it to .env
 ```
 
-2. **Configureer .env**
+Configure in [Cloudflare Dashboard](https://one.dash.cloudflare.com/):
+- **Zero Trust → Access → Tunnels**
+- Select your tunnel
+- **Public Hostname**:
+    - Subdomain: `santa` (or your choice)
+    - Domain: `your-domain.com`
+    - Service: `http://frontend:80`
+
+### Step 5: Start the application
+
 ```bash
-# Pas .env aan met je tunnel token
-nano .env
+# Pull images
+docker compose -f docker-compose.prod.yml pull
+
+# Start services
+docker compose -f docker-compose.prod.yml up -d
+
+# Check status
+docker compose -f docker-compose.prod.yml ps
+
+# View logs
+docker compose -f docker-compose.prod.yml logs -f
 ```
 
-3. **Start applicatie**
+### Step 6: Test the application
+
+- **Local:** `http://raspberry-pi-ip`
+- **With Cloudflare Tunnel:** `https://santa.your-domain.com`
+
+### Auto-start on reboot
+
 ```bash
-# Build en start
-docker-compose up -d
-
-# Bekijk logs
-docker-compose logs -f
-
-# Stop
-docker-compose down
+# Create systemd service
+sudo nano /etc/systemd/system/santa.service
 ```
 
-## Gebruik
+```ini
+[Unit]
+Description=Santa Gift Exchange
+Requires=docker.service
+After=docker.service
 
-1. Maak een groep aan (bijv. "Kerst 2025")
-2. Voeg alle deelnemers toe
-3. Deel de unieke links met elke deelnemer
-4. Trek de lootjes wanneer iedereen toegevoegd is
-5. Deelnemers kunnen hun verlanglijstje invullen en zien wie ze hebben getrokken
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=/home/pi/santa
+ExecStart=/usr/bin/docker compose -f docker-compose.prod.yml up -d
+ExecStop=/usr/bin/docker compose -f docker-compose.prod.yml down
+User=pi
 
-## Structuur
-
+[Install]
+WantedBy=multi-user.target
 ```
-kerstlootjes/
-├── backend/          # NestJS backend
-├── frontend/         # Vue.js frontend
-├── docker-compose.yml
-└── .env
+
+```bash
+# Enable service
+sudo systemctl enable santa.service
+sudo systemctl start santa.service
+
+# Check status
+sudo systemctl status santa.service
 ```
 
-## Technologieën
+---
 
-- **Frontend:** Vue.js 3, TypeScript, Vite
-- **Backend:** NestJS, TypeORM, PostgreSQL
-- **Deployment:** Docker, Cloudflare Tunnel
-- **Database:** PostgreSQL
+## 📋 Using the Application
 
-## License
+### For the Organizer (Admin)
 
-MIT
+1. **Login as admin**
+    - Go to the homepage
+    - Click "Login as Admin"
+    - Login with your Google account (must match `ADMIN_EMAIL`)
+
+2. **Create a group**
+    - Go to the Admin Dashboard
+    - Enter group name (e.g., "Christmas 2025")
+    - Click "Create Group"
+
+3. **Add participants**
+    - Enter username
+    - Click "Add"
+    - Repeat for each participant
+
+4. **Share unique links**
+    - Click "📋 Copy Link" for each user
+    - Send the link to the respective participant via email/WhatsApp/etc.
+
+5. **Draw names**
+    - When everyone is added
+    - Click "🎲 Draw Lots"
+    - Names are randomly distributed
+
+### For Participants
+
+1. **First visit**
+    - Open the received unique link
+    - Set a password (minimum 4 characters)
+    - You are now logged in
+
+2. **Fill in wishlist**
+    - Add items with description and optional link
+    - Edit or delete items whenever you want
+
+3. **After the drawing**
+    - You see who you drew
+    - You can view that person's wishlist
+    - No one else can see your wishlist (except the person who drew you)
+
+4. **Next visits**
+    - Login with your password
+    - Your session remains active during your browser session
+
+---
+
+## 🔧 Configuration
+
+### Environment Variables
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `DB_USER` | PostgreSQL username | `santa` |
+| `DB_PASSWORD` | PostgreSQL password | `secure_password_123` |
+| `DB_NAME` | Database name | `santa` |
+| `FRONTEND_URL` | Frontend URL (for CORS) | `http://localhost` |
+| `GOOGLE_CLIENT_ID` | Google OAuth Client ID | `123456-abc.apps.googleusercontent.com` |
+| `GOOGLE_CLIENT_SECRET` | Google OAuth Client Secret | `GOCSPX-xxxxx` |
+| `ADMIN_EMAIL` | Email of the admin user | `admin@example.com` |
+| `JWT_SECRET` | Secret for JWT tokens | `random_string_min_32_chars` |
+| `CLOUDFLARE_TUNNEL_TOKEN` | Cloudflare Tunnel token (optional) | `eyJh...` |
+
+### Ports
+
+- **Frontend:** 80 (HTTP)
+- **Backend:** Internal (not exposed)
+- **Database:** Internal (not exposed)
+
+### Docker Images
+
+The application uses the following images:
+
+```yaml
+backend:  ghcr.io/firepeak-technology/santa-backend:latest
+frontend: ghcr.io/firepeak-technology/santa-frontend:latest
+database: postgres:16-alpine
+tunnel:   cloudflare/cloudflared:latest
+```
+
+---
+
+## 🔄 Updates
+
+### Update to latest version
+
+```bash
+cd ~/santa
+
+# Pull new images
+docker compose -f docker-compose.prod.yml pull
+
+# Restart services
+docker compose -f docker-compose.prod.yml up -d
+
+# Cleanup old images
+docker image prune -f
+```
+
+### Automatic updates (optional)
+
+Create a cron job for automatic updates:
+
+```bash
+# Edit crontab
+crontab -e
+
+# Add: every day at 3:00 AM
+0 3 * * * cd /home/pi/santa && docker compose -f docker-compose.prod.yml pull && docker compose -f docker-compose.prod.yml up -d && docker image prune -f
+```
+
+---
+
+## 🛠️ Troubleshooting
+
+### View logs
+
+```bash
+# All services
+docker compose -f docker-compose.prod.yml logs -f
+
+# Specific service
+docker compose -f docker-compose.prod.yml logs -f backend
+docker compose -f docker-compose.prod.yml logs -f frontend
+```
+
+### Restart services
+
+```bash
+# Restart everything
+docker compose -f docker-compose.prod.yml restart
+
+# Restart specific service
+docker compose -f docker-compose.prod.yml restart backend
+```
+
+### Database backup
+
+```bash
+# Create backup
+docker compose -f docker-compose.prod.yml exec postgres pg_dump -U santa santa > backup_$(date +%Y%m%d).sql
+
+# Restore
+docker compose -f docker-compose.prod.yml exec -T postgres psql -U santa santa < backup_20241219.sql
+```
+
+### Complete reset
+
+```bash
+# Stop and remove everything (including data!)
+docker compose -f docker-compose.prod.yml down -v
+
+# Start fresh
+docker compose -f docker-compose.prod.yml up -d
+```
+
+### CORS errors
+
+If you get CORS errors:
+1. Check `FRONTEND_URL` in `.env`
+2. Verify Google OAuth Redirect URI
+3. Restart backend: `docker compose -f docker-compose.prod.yml restart backend`
+
+### Google OAuth errors
+
+**redirect_uri_mismatch:**
+- Ensure Redirect URI in Google Console exactly matches: `http://your-domain.com/api/auth/google/callback`
+
+**access_denied:**
+- Check if `ADMIN_EMAIL` in `.env` matches the Google account
+
+---
+
+## 📊 Monitoring
+
+### Check status
+
+```bash
+# Container status
+docker compose -f docker-compose.prod.yml ps
+
+# Resource usage
+docker stats
+
+# Disk usage
+docker system df
+```
+
+### Log rotation
+
+Prevent logs from becoming too large:
+
+```bash
+# Edit /etc/docker/daemon.json
+sudo nano /etc/docker/daemon.json
+```
+
+```json
+{
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "10m",
+    "max-file": "3"
+  }
+}
+```
+
+```bash
+# Restart Docker daemon
+sudo systemctl restart docker
+```
+
+---
+
+## 🔒 Security
+
+### Best Practices
+
+1. **Use strong passwords**
+    - `DB_PASSWORD`: minimum 16 characters
+    - `JWT_SECRET`: minimum 32 random characters
+
+2. **Update regularly**
+   ```bash
+   docker compose -f docker-compose.prod.yml pull
+   docker compose -f docker-compose.prod.yml up -d
+   ```
+
+3. **Use HTTPS**
+    - Cloudflare Tunnel provides automatic HTTPS
+    - Or use reverse proxy (nginx/caddy) with Let's Encrypt
+
+4. **Firewall configuration**
+   ```bash
+   # UFW (Ubuntu/Debian)
+   sudo ufw allow 80/tcp
+   sudo ufw allow 443/tcp
+   sudo ufw enable
+   ```
+
+5. **Backup regularly**
+    - Make daily database backups
+    - Store `.env` securely
+
+---
+
+## 🤝 Support
+
+### Frequently Asked Questions
+
+**Q: Can I run multiple groups at the same time?**
+A: Yes, you can create multiple groups in the admin dashboard.
+
+**Q: Can participants still modify their wishlist after the drawing?**
+A: Yes, participants can always add or remove items.
+
+**Q: What happens if someone forgets their password?**
+A: As admin, you can create a new user with the same name and share a new link.
+
+**Q: Is the application suitable for large groups?**
+A: Yes, there is no limit to the number of participants per group.
+
+**Q: Does every participant need a Google account?**
+A: No, only the admin needs Google OAuth. Participants use basic authentication.
+
+### Report an issue
+
+Found a problem? [Open an issue](https://github.com/firepeak-technology/santa/issues) on GitHub.
+
+---
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) file for details.
+
+---
+
+## 🎄 Credits
+
+Developed with ❤️ by Firepeak Technology
+
+**Happy Secret Santa! 🎁**
+
+---
+
+<p align="center">
+  Made with ☕ and 🎄
+</p>
