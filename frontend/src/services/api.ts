@@ -10,7 +10,7 @@ export const api = axios.create({
 });
 
 export const groupsApi = {
-  create: (name: string) => api.post('/groups', { name }),
+  create: (name: string, budget: number) => api.post('/groups', { name,budget }),
   list: (name: string) => api.get('/groups', ),
   get: (id: string) => api.get(`/groups/${id}`),
   drawLots: (id: string) => api.post(`/groups/${id}/draw`),

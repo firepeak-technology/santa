@@ -13,8 +13,8 @@ export class GroupsService {
     private usersRepository: Repository<User>,
   ) {}
 
-  async create(name: string): Promise<Group> {
-    const group = this.groupsRepository.create({ name });
+  async create(name: string, budget: number): Promise<Group> {
+    const group = this.groupsRepository.create({ name , budget});
     return this.groupsRepository.save(group);
   }
 

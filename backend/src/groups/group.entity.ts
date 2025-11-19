@@ -9,6 +9,9 @@ export class Group {
   @Column()
   name: string;
 
+  @Column({default: 30})
+  budget: number;
+
   @Column({ default: false })
   drawn: boolean;
 

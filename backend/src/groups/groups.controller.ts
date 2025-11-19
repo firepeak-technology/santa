@@ -9,8 +9,8 @@ export class GroupsController {
 
   @Post()
   @UseGuards(AuthGuard('jwt'), AdminGuard)
-  async create(@Body() body: { name: string }) {
-    return this.groupsService.create(body.name);
+  async create(@Body() body: { name: string, budget:number }) {
+    return this.groupsService.create(body.name, body.budget);
   }
 
   @Post(':id/draw')

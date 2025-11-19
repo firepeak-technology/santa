@@ -5,6 +5,7 @@
       
       <div class="section">
         <h3>Jouw Verlanglijstje voor <u>{{user.group.name}}</u></h3>
+        <h4>Budget: <strong>&euro; {{user.group.budget}}</strong></h4>
         <form @submit.prevent="addWishlistItem" class="flex gap-4 flex-col">
           <input v-model="newItem.item" type="text" placeholder="Item" class="input input-lg w-full" required />
           <input v-model="newItem.description" type="text" class="input input-lg w-full"  placeholder="Beschrijving (optioneel)" />

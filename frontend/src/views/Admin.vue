@@ -26,6 +26,13 @@
             required
             class="input"
         />
+        <input
+            v-model="budget"
+            type="number"
+            placeholder="Budget per persoon"
+            required
+            class="input w-20"
+        />
         <button type="submit" class="ml-4 btn btn-outline btn-secondary">Groep Aanmaken</button>
       </form>
       </div>
@@ -44,7 +51,7 @@
           <div class="flex-1">
 
     <div v-if="currentGroup">
-      <h2>{{ currentGroup.name }}</h2>
+      <h2>{{ currentGroup.name }} <small>&euro; {{currentGroup.budget}}</small></h2>
 
       <div class="section">
         <form @submit.prevent="addUser">
@@ -103,6 +110,7 @@ import { groupsApi, usersApi } from '../services/api';
 
 const authStore = useAuthStore();
 const groupName = ref('');
+const budget = ref(null);
 const username = ref('');
 const currentGroup = ref<any>(null);
 const message = ref('');
@@ -110,7 +118,7 @@ const messageType = ref('success');
 
 const createGroup = async () => {
   try {
-    const response = await groupsApi.create(groupName.value);
+    const response = await groupsApi.create(groupName.value, budget.value);
     currentGroup.value = response.data;
     showMessage('Groep succesvol aangemaakt!', 'success');
     groupName.value = '';
