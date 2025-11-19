@@ -36,8 +36,6 @@ services:
   frontend:
     image: ghcr.io/firepeak-technology/santa-frontend:latest
     container_name: santa-frontend
-    ports:
-      - "80:80"
     depends_on:
       - backend
     networks:
