@@ -10,6 +10,7 @@ export class AuthService {
     async validateGoogleUser(profile: any): Promise<any> {
         const email = profile.emails[0].value;
         const isAdmin = email === this.adminEmail;
+        console.log('email', isAdmin, this.adminEmail, email);
 
         return {
             email,
