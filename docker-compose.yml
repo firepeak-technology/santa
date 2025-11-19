@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: kerstlootjes-db
+    environment:
+      POSTGRES_USER: ${DB_USER:-kerstlootjes}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-kerstlootjes}
+      POSTGRES_DB: ${DB_NAME:-kerstlootjes}
+    volumes:
+      - ${DB_DATA}:/var/lib/postgresql/data
+    networks:
+      - kerstlootjes-network
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./backend
+      target: production
+    container_name: kerstlootjes-backend
+    ports:
+      - "3000:3000"
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      JWT_SECRET: ${JWT_SECRET}
+      DB_USER: ${DB_USER:-kerstlootjes}
+      DB_PASSWORD: ${DB_PASSWORD:-kerstlootjes}
+      DB_NAME: ${DB_NAME:-kerstlootjes}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost}
+    depends_on:
+      - postgres
+    networks:
+      - kerstlootjes-network
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      target: production
+    container_name: kerstlootjes-frontend
+    depends_on:
+      - backend
+    networks:
+      - kerstlootjes-network
+    restart: unless-stopped
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: kerstlootjes-tunnel
+    command: tunnel --no-autoupdate run
+    environment:
+      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN}
+    depends_on:
+      - frontend
+    networks:
+      - kerstlootjes-network
+    restart: unless-stopped
+
+networks:
+  kerstlootjes-network:
+    driver: bridge
+
+volumes:
+  postgres_data:

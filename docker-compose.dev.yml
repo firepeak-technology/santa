@@ -1,0 +1,71 @@
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: kerstlootjes-db
+    environment:
+      POSTGRES_USER: ${DB_USER:-kerstlootjes}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-kerstlootjes}
+      POSTGRES_DB: ${DB_NAME:-kerstlootjes}
+    volumes:
+      - ${DB_DATA}:/var/lib/postgresql/data
+    networks:
+      - kerstlootjes-network
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./backend
+      target: dev
+    container_name: kerstlootjes-backend
+    ports:
+      - "3000:3000"
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: ${DB_USER:-kerstlootjes}
+      DB_PASSWORD: ${DB_PASSWORD:-kerstlootjes}
+      DB_NAME: ${DB_NAME:-kerstlootjes}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
+      JWT_SECRET: ${JWT_SECRET}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:5173}
+      GOOGLE_CALLBACK_URL: ${GOOGLE_CALLBACK_URL}
+    depends_on:
+      - postgres
+    networks:
+      - kerstlootjes-network
+    restart: unless-stopped
+    volumes:
+       - ./backend/src:/app/src
+       - ./backend/package.json:/app/package.json
+
+  frontend:
+    build:
+      context: ./frontend
+      target: dev
+    container_name: kerstlootjes-frontend
+    environment:
+      VITE_API_URL: http://localhost:3000
+      GOOGLE_CALLBACK_URL: ${GOOGLE_CALLBACK_URL}
+    ports:
+      - "5173:5173"  # Frontend op poort 5174
+    depends_on:
+      - backend
+    networks:
+      - kerstlootjes-network
+    restart: unless-stopped
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+      - ./frontend/index.html:/app/index.html
+      - ./frontend/vite.config.ts:/app/vite.config.ts
+      - ./frontend/package.json:/app/package.json
+
+networks:
+  kerstlootjes-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
