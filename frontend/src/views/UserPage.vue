@@ -4,8 +4,8 @@
       <h2>Hallo {{ user.username }}! 👋</h2>
       
       <div class="section">
-        <h3>Jouw Verlanglijstje</h3>
-        <form @submit.prevent="addWishlistItem">
+        <h3>Jouw Verlanglijstje voor <u>{{user.group.name}}</u></h3>
+        <form @submit.prevent="addWishlistItem" class="flex gap-4 flex-col">
           <input v-model="newItem.item" type="text" placeholder="Item" class="input input-lg w-full" required />
           <input v-model="newItem.description" type="text" class="input input-lg w-full"  placeholder="Beschrijving (optioneel)" />
           <input v-model="newItem.link" type="url" class="input input-lg w-full"  placeholder="Link (optioneel)" />
@@ -21,7 +21,7 @@
               </p>
             </div>
 
-            <button  v-if="item.link" :href="item.link" target="_blank"  class="btn btn-square btn-ghost">🔗 Link</button>
+            <a  v-if="item.link" :href="item.link" target="_blank"  class="btn btn-square btn-ghost">🔗 Link</a>
             <button @click="deleteItem(item.id)" class="btn btn-square btn-ghost">🗑️</button>
           </li>
         </ul>
@@ -47,7 +47,7 @@
                   </p>
                 </div>
                 <div></div>
-                <button  v-if="item.link" :href="item.link" target="_blank"  class="btn btn-square btn-ghost">🔗 Link</button>
+                <a  v-if="item.link" :href="item.link" target="_blank"  class="btn btn-square btn-ghost">🔗 Link</a>
 
               </li>
             </ul>
@@ -146,85 +146,8 @@ h3 {
   border-top: none;
 }
 
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  margin-bottom: 1.5rem;
-}
 
-input {
-  padding: 0.75rem;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
-  font-size: 1rem;
-}
 
-input:focus {
-  outline: none;
-  border-color: #c41e3a;
-}
-
-.btn-primary {
-  background: #c41e3a;
-  color: white;
-  padding: 0.75rem;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1rem;
-}
-
-.btn-primary:hover {
-  background: #a01729;
-}
-
-.wishlist {
-  list-style: none;
-  padding: 0;
-}
-
-.wishlist li {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  padding: 1rem;
-  background: #f9f9f9;
-  border-radius: 8px;
-  margin-bottom: 0.75rem;
-}
-
-.item-content {
-  flex: 1;
-}
-
-.item-content p {
-  margin: 0.5rem 0;
-  color: #666;
-}
-
-.item-content a {
-  color: #165b33;
-  text-decoration: none;
-}
-
-.item-content a:hover {
-  text-decoration: underline;
-}
-
-.btn-delete {
-  background: #ff4444;
-  color: white;
-  border: none;
-  padding: 0.5rem 0.75rem;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 1rem;
-}
-
-.btn-delete:hover {
-  background: #cc0000;
-}
 
 .drawn {
   background: linear-gradient(135deg, #fff5f5 0%, #f0fff4 100%);

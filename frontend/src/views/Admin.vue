@@ -2,13 +2,17 @@
   <div class="admin">
     <div class="admin-header">
       <div class="user-info">
-        <img v-if="authStore.user?.picture" :src="authStore.user.picture" alt="Profile" />
+        <div class="avatar">
+          <div class="ring-primary ring-offset-base-100 w-24 rounded-full ring-2 ring-offset-2">
+            <img v-if="authStore.user?.picture" :src="authStore.user.picture" alt="Profile" class="rounded"/>
+          </div>
+        </div>
         <div>
           <h2>Admin Dashboard</h2>
           <p>{{ authStore.user?.name }} ({{ authStore.user?.email }})</p>
         </div>
       </div>
-      <button @click="authStore.logout" class="btn-logout">Uitloggen</button>
+      <button @click="authStore.logout" class="btn btn-secondary">Uitloggen</button>
     </div>
 
     <div class="card bg-white shadow-sm">
@@ -57,9 +61,10 @@
 
       <div v-if="currentGroup.users && currentGroup.users.length > 0" class="section">
         <h3>Deelnemers ({{ currentGroup.users.length }})</h3>
-        <ul class="users-list">
-          <li v-for="user in currentGroup.users" :key="user.id" class="flex space-between">
-            <span>{{ user.username }}</span>
+        <ul class="list">
+          <li v-for="user in currentGroup.users" :key="user.id" class="list-row">
+            <div>{{ user.username }}</div>
+            <div></div>
             <button @click="copyLink(user.uniqueLink)" class="btn-copy">
               📋 Kopieer Link
             </button>
@@ -202,34 +207,21 @@ const loadGroup = async (group: any) => {
   gap: 1rem;
 }
 
-.user-info img {
+._user-info img {
   width: 50px;
   height: 50px;
   border-radius: 50%;
 }
 
-.user-info h2 {
+._user-info h2 {
   margin: 0;
   color: #c41e3a;
 }
 
-.user-info p {
+._user-info p {
   margin: 0.25rem 0 0 0;
   color: #666;
   font-size: 0.9rem;
 }
 
-.btn-logout {
-  background: #666;
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1rem;
-}
-
-.btn-logout:hover {
-  background: #444;
-}
 </style>

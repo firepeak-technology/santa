@@ -1,5 +1,6 @@
 <template>
     <!-- Voeg toe bovenaan -->
+    <img src="/logo.png" alt="logo"/>
     <div class="mt-4 card bg-white w-full shadow-sm">
       <div class="card-body"  v-if="!authStore.isAdmin">
       <h2 class="text-lg ">Ben je de organisator?</h2>
