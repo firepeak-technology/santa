@@ -8,6 +8,8 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
+FROM caddy:2-alpine AS production
+
 # Copy built application
 COPY --from=builder /app/dist/apps/frontend /srv
 
