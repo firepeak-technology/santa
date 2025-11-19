@@ -46,12 +46,13 @@ services:
 
   cloudflared:
     image: cloudflare/cloudflared:latest
-    container_name: cloudflared
+    container_name: santa-cloudflared
     restart: unless-stopped
     command: tunnel run
     volumes:
       - ./cloudflared:/etc/cloudflared
-
+    networks:
+      - santa-network
 
 networks:
   santa-network:

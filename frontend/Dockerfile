@@ -8,14 +8,15 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
-FROM nginx:alpine as production
+# Copy built application
+COPY --from=builder /app/dist/apps/frontend /srv
 
-COPY --from=build /app/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Copy Caddyfile configuration
+COPY apps/frontend/Caddyfile /etc/caddy/Caddyfile
 
 EXPOSE 80
 
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile"]
 
 FROM node:20-alpine as dev
 
