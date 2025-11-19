@@ -10,7 +10,7 @@ RUN npm run build
 
 FROM caddy:2-alpine AS production
 
-COPY --from=build /app/dist /usr/share/nginx/html
+COPY --from=build /app/dist /srv
 COPY Caddyfile /etc/caddy/Caddyfile
 
 EXPOSE 80
