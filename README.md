@@ -93,13 +93,13 @@ CLOUDFLARE_TUNNEL_TOKEN=your_tunnel_token
 
 ```bash
 # Pull the latest images
-docker-compose -f docker-compose.prod.yml pull
+docker-compose -f  docker-compose.yml pull
 
 # Start all services
-docker-compose -f docker-compose.prod.yml up -d
+docker-compose -f  docker-compose.yml up -d
 
 # View logs
-docker-compose -f docker-compose.prod.yml logs -f
+docker-compose -f  docker-compose.yml logs -f
 ```
 
 ### 4. Open the application
@@ -191,16 +191,16 @@ Configure in [Cloudflare Dashboard](https://one.dash.cloudflare.com/):
 
 ```bash
 # Pull images
-docker compose -f docker-compose.prod.yml pull
+docker compose -f  docker-compose.yml pull
 
 # Start services
-docker compose -f docker-compose.prod.yml up -d
+docker compose -f  docker-compose.yml up -d
 
 # Check status
-docker compose -f docker-compose.prod.yml ps
+docker compose -f  docker-compose.yml ps
 
 # View logs
-docker compose -f docker-compose.prod.yml logs -f
+docker compose -f  docker-compose.yml logs -f
 ```
 
 ### Step 6: Test the application
@@ -225,8 +225,8 @@ After=docker.service
 Type=oneshot
 RemainAfterExit=yes
 WorkingDirectory=/home/pi/santa
-ExecStart=/usr/bin/docker compose -f docker-compose.prod.yml up -d
-ExecStop=/usr/bin/docker compose -f docker-compose.prod.yml down
+ExecStart=/usr/bin/docker compose -f  docker-compose.yml up -d
+ExecStop=/usr/bin/docker compose -f  docker-compose.yml down
 User=pi
 
 [Install]
@@ -337,10 +337,10 @@ tunnel:   cloudflare/cloudflared:latest
 cd ~/santa
 
 # Pull new images
-docker compose -f docker-compose.prod.yml pull
+docker compose -f  docker-compose.yml pull
 
 # Restart services
-docker compose -f docker-compose.prod.yml up -d
+docker compose -f  docker-compose.yml up -d
 
 # Cleanup old images
 docker image prune -f
@@ -355,7 +355,7 @@ Create a cron job for automatic updates:
 crontab -e
 
 # Add: every day at 3:00 AM
-0 3 * * * cd /home/pi/santa && docker compose -f docker-compose.prod.yml pull && docker compose -f docker-compose.prod.yml up -d && docker image prune -f
+0 3 * * * cd /home/pi/santa && docker compose -f  docker-compose.yml pull && docker compose -f  docker-compose.yml up -d && docker image prune -f
 ```
 
 ---
@@ -366,41 +366,41 @@ crontab -e
 
 ```bash
 # All services
-docker compose -f docker-compose.prod.yml logs -f
+docker compose -f  docker-compose.yml logs -f
 
 # Specific service
-docker compose -f docker-compose.prod.yml logs -f backend
-docker compose -f docker-compose.prod.yml logs -f frontend
+docker compose -f  docker-compose.yml logs -f backend
+docker compose -f  docker-compose.yml logs -f frontend
 ```
 
 ### Restart services
 
 ```bash
 # Restart everything
-docker compose -f docker-compose.prod.yml restart
+docker compose -f  docker-compose.yml restart
 
 # Restart specific service
-docker compose -f docker-compose.prod.yml restart backend
+docker compose -f  docker-compose.yml restart backend
 ```
 
 ### Database backup
 
 ```bash
 # Create backup
-docker compose -f docker-compose.prod.yml exec postgres pg_dump -U santa santa > backup_$(date +%Y%m%d).sql
+docker compose -f  docker-compose.yml exec postgres pg_dump -U santa santa > backup_$(date +%Y%m%d).sql
 
 # Restore
-docker compose -f docker-compose.prod.yml exec -T postgres psql -U santa santa < backup_20241219.sql
+docker compose -f  docker-compose.yml exec -T postgres psql -U santa santa < backup_20241219.sql
 ```
 
 ### Complete reset
 
 ```bash
 # Stop and remove everything (including data!)
-docker compose -f docker-compose.prod.yml down -v
+docker compose -f  docker-compose.yml down -v
 
 # Start fresh
-docker compose -f docker-compose.prod.yml up -d
+docker compose -f  docker-compose.yml up -d
 ```
 
 ### CORS errors
@@ -408,7 +408,7 @@ docker compose -f docker-compose.prod.yml up -d
 If you get CORS errors:
 1. Check `FRONTEND_URL` in `.env`
 2. Verify Google OAuth Redirect URI
-3. Restart backend: `docker compose -f docker-compose.prod.yml restart backend`
+3. Restart backend: `docker compose -f  docker-compose.yml restart backend`
 
 ### Google OAuth errors
 
@@ -426,7 +426,7 @@ If you get CORS errors:
 
 ```bash
 # Container status
-docker compose -f docker-compose.prod.yml ps
+docker compose -f  docker-compose.yml ps
 
 # Resource usage
 docker stats
@@ -471,8 +471,8 @@ sudo systemctl restart docker
 
 2. **Update regularly**
    ```bash
-   docker compose -f docker-compose.prod.yml pull
-   docker compose -f docker-compose.prod.yml up -d
+   docker compose -f  docker-compose.yml pull
+   docker compose -f  docker-compose.yml up -d
    ```
 
 3. **Use HTTPS**
