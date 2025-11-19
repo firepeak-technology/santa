@@ -20,6 +20,13 @@ export class GroupsController {
     return { message: 'Lootjes succesvol getrokken!' };
   }
 
+  @Post(':id/clear-draw')
+  @UseGuards(AuthGuard('jwt'), AdminGuard)
+  async clearDraw(@Param('id') id: string) {
+    await this.groupsService.clearDraw(id);
+    return { message: 'Lootjes trek cleared!' };
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return this.groupsService.findOne(id);

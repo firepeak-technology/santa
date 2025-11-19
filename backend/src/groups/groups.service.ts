@@ -18,6 +18,29 @@ export class GroupsService {
     return this.groupsRepository.save(group);
   }
 
+  async clearDraw(groupId: string): Promise<void> {
+    const group = await this.groupsRepository.findOne({
+      where: {id: groupId},
+      relations: ['users'],
+    });
+
+    if (!group) {
+      throw new BadRequestException('Groep niet gevonden');
+    }
+
+    if (!group.drawn) {
+      throw new BadRequestException('Lootjes nog niet getrokken voor deze groep');
+    }
+
+   for(const user of group.users) {
+      user.drawnUser = null;
+      await this.usersRepository.save(user);
+    }
+
+    group.drawn = false;
+    await this.groupsRepository.save(group);
+  }
+
   async drawLots(groupId: string): Promise<void> {
     const group = await this.groupsRepository.findOne({
       where: { id: groupId },

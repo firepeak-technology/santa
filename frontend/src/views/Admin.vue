@@ -87,6 +87,13 @@
         >
           {{ currentGroup.drawn ? '✅ Lootjes Getrokken!' : '🎲 Trek Lootjes' }}
         </button>
+        <button
+            v-if="currentGroup.drawn"
+            @click="resetDrawn"
+            class="btn btn-warning"
+        >
+          Reset Trekking
+        </button>
         <p v-if="currentGroup.drawn" class="info">
           De lootjes zijn getrokken! Stuur alle deelnemers hun unieke link.
         </p>
@@ -140,6 +147,21 @@ const addUser = async () => {
     username.value = '';
   } catch (error) {
     showMessage('Fout bij toevoegen gebruiker', 'error');
+  }
+};
+
+const resetDrawn = async () => {
+  try {
+    await groupsApi.resetDrawn(currentGroup.value.id);
+    const response = await groupsApi.get(currentGroup.value.id);
+    currentGroup.value = response.data;
+    showMessage('Trekking succesvol gereset!', 'success');
+  } catch (error: any) {
+    if (error.response?.status === 403) {
+      showMessage('Geen admin rechten', 'error');
+    } else {
+      showMessage('Fout bij resetten trekking', 'error');
+    }
   }
 };
 

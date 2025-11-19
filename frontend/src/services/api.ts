@@ -14,6 +14,7 @@ export const groupsApi = {
   list: (name: string) => api.get('/groups', ),
   get: (id: string) => api.get(`/groups/${id}`),
   drawLots: (id: string) => api.post(`/groups/${id}/draw`),
+  resetDrawn: (id: string) => api.post(`/groups/${id}/clear-draw`),
 };
 
 export const usersApi = {
