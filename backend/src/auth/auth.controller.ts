@@ -19,13 +19,13 @@ export class AuthController {
         try {
             // Na Google OAuth, req.user bevat de user info
             const { access_token, user } = await this.authService.login(req.user);
-
             // Redirect naar frontend met JWT token
-            const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+            const frontendUrl = process.env.FRONTEND_URL  ;
+            console.log('frontendUrl', frontendUrl);
             res.redirect(`${frontendUrl}/auth/callback?token=${access_token}`);
         } catch (error) {
             console.error('OAuth callback error:', error);
-            const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+            const frontendUrl = process.env.FRONTEND_URL;
             res.redirect(`${frontendUrl}?error=auth_failed`);
         }
     }

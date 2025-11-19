@@ -10,9 +10,6 @@ export class AuthService {
     async validateGoogleUser(profile: any): Promise<any> {
         const email = profile.emails[0].value;
         const isAdmin = email === this.adminEmail;
-        console.log(this.adminEmail);
-        console.log({
-            secretOrKey: process.env.JWT_SECRET || 'your-secret-key',})
 
         return {
             email,
@@ -30,7 +27,6 @@ export class AuthService {
             isAdmin: user.isAdmin,
         };
 
-        console.log(payload);
         return {
             access_token: this.jwtService.sign(payload),
             user: payload,

@@ -5,7 +5,7 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+  const frontendUrl = process.env.FRONTEND_URL  ;
   app.enableCors({
     origin: frontendUrl,
     credentials: true,
@@ -15,10 +15,6 @@ console.log( process.env.FRONTEND_URL);
   // CORS configuratie - ruimer voor development
   app.enableCors({
     origin: [
-      // 'http://localhost:5173',
-      // 'http://localhost:5174',
-      // 'http://localhost:3000',
-      // 'http://localhost',
       frontendUrl,
     ].filter(Boolean),
     credentials: true,

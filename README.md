@@ -76,6 +76,7 @@ DB_NAME=santa
 
 # Frontend URL
 FRONTEND_URL=http://localhost
+API_URL=http://localhost/api
 
 # Google OAuth (for admin dashboard)
 GOOGLE_CLIENT_ID=your_google_client_id
@@ -375,17 +376,18 @@ sudo systemctl status santa.service
 
 ### Environment Variables
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `DB_USER` | PostgreSQL username | `santa` |
-| `DB_PASSWORD` | PostgreSQL password | `secure_password_123` |
-| `DB_NAME` | Database name | `santa` |
-| `FRONTEND_URL` | Frontend URL (for CORS) | `http://localhost` |
-| `GOOGLE_CLIENT_ID` | Google OAuth Client ID | `123456-abc.apps.googleusercontent.com` |
-| `GOOGLE_CLIENT_SECRET` | Google OAuth Client Secret | `GOCSPX-xxxxx` |
-| `ADMIN_EMAIL` | Email of the admin user | `admin@example.com` |
-| `JWT_SECRET` | Secret for JWT tokens | `random_string_min_32_chars` |
-| `CLOUDFLARE_TUNNEL_TOKEN` | Cloudflare Tunnel token (optional) | `eyJh...` |
+| Variable                  | Description                        | Example                                 |
+|---------------------------|------------------------------------|-----------------------------------------|
+| `DB_USER`                 | PostgreSQL username                | `santa`                                 |
+| `DB_PASSWORD`             | PostgreSQL password                | `secure_password_123`                   |
+| `DB_NAME`                 | Database name                      | `santa`                                 |
+| `FRONTEND_URL`            | Frontend URL (for CORS)            | `http://localhost`                      |
+| `API_URL`                 | API URL                            | `http://localhost:3000`                 |
+| `GOOGLE_CLIENT_ID`        | Google OAuth Client ID             | `123456-abc.apps.googleusercontent.com` |
+| `GOOGLE_CLIENT_SECRET`    | Google OAuth Client Secret         | `GOCSPX-xxxxx`                          |
+| `ADMIN_EMAIL`             | Email of the admin user            | `admin@example.com`                     |
+| `JWT_SECRET`              | Secret for JWT tokens              | `random_string_min_32_chars`            |
+| `CLOUDFLARE_TUNNEL_TOKEN` | Cloudflare Tunnel token (optional) | `eyJh...`                               |
 
 ### Ports
 

@@ -9,13 +9,13 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
         super({
             clientID: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-            callbackURL: `${process.env.VITE_API_URL || 'http://localhost:3000'}/auth/google/callback`,
+            callbackURL: `${process.env.API_URL || 'http://localhost:3000'}/auth/google/callback`,
             scope: ['email', 'profile'],
         });
 
 
         console.log('Google Strategy initialized');
-        console.log('Callback URL:', `${process.env.VITE_API_URL || 'http://localhost:3000'}/auth/google/callback`);
+        console.log('Callback URL:', `${process.env.API_URL || 'http://localhost:3000'}/auth/google/callback`);
     }
 
     async validate(
