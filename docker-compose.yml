@@ -38,6 +38,8 @@ services:
     container_name: santa-frontend
     depends_on:
       - backend
+    ports:
+      - "8080:80"  # Gebruik poort 8080 extern, 80 intern
     networks:
       - santa-network
     restart: unless-stopped
